@@ -13,7 +13,7 @@ import javax.sql.DataSource;
 import java.util.Properties;
 
 @Configuration
-@EnableJpaRepositories("com.springdata.repositories")
+@EnableJpaRepositories("hello.repositories")
 public class PersistenceContext {
 
     @Bean
@@ -31,7 +31,7 @@ public class PersistenceContext {
         LocalContainerEntityManagerFactoryBean entityManagerFactoryBean = new LocalContainerEntityManagerFactoryBean();
         entityManagerFactoryBean.setDataSource(dataSource);
         entityManagerFactoryBean.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
-        entityManagerFactoryBean.setPackagesToScan("com.springdata.entity");
+        entityManagerFactoryBean.setPackagesToScan("hello.domains");
 
         Properties jpaProperties = new Properties();
         jpaProperties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");

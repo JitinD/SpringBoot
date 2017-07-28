@@ -1,61 +1,42 @@
 package hello.services;
 
+import hello.config.PersistenceContext;
 import hello.domains.User;
 import hello.repositories.UserRepository;
+import hello.util.Util;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.stereotype.Component;
 
-import java.util.Iterator;
 import java.util.List;
 
-public class UserService implements UserRepository {
+@Component
+public class UserService {
 
-    private static List<User> users;
+    ApplicationContext applicationContext = new AnnotationConfigApplicationContext(PersistenceContext.class);
+    UserRepository userRepository = applicationContext.getBean(UserRepository.class);
 
     public List<User> findAllUsers() {
-        return users;
+        return Util.toList(userRepository.findAll());
     }
 
-    public User findById(Long id) {
-        for(User user : users){
-            if(user.getId() == id){
-                return user;
-            }
-        }
-        return null;
-    }
-
-    public User findByName(String name) {
-        for(User user : users){
-            if(user.getName().equalsIgnoreCase(name)){
-                return user;
-            }
-        }
-        return null;
+    public User findById(Integer id) {
+        return userRepository.findOne(id);
     }
 
     public void saveUser(User user) {
-        users.add(user);
+        userRepository.save(user);
     }
 
-    public void updateUser(User user) {
-        int index = users.indexOf(user);
-        users.set(index, user);
+    public void deleteUserById(Integer id) {
+        userRepository.delete(id);
     }
 
-    public void deleteUserById(long id) {
-
-        for (Iterator<User> iterator = users.iterator(); iterator.hasNext(); ) {
-            User user = iterator.next();
-            if (user.getId() == id) {
-                iterator.remove();
-            }
-        }
+    public boolean isUserAvailable(User user) {
+        return userRepository.exists(user.getId());
     }
 
-    public boolean isUserExist(User user) {
-        return findByName(user.getName())!=null;
-    }
-
-    public void deleteAllUsers(){
-        users.clear();
+    public void deleteAllUsers() {
+        userRepository.deleteAll();
     }
 }
